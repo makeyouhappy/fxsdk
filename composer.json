@@ -1,0 +1,17 @@
+{
+    "name": "fxqifu/openapi",
+    "description": "飞象企服开放平台SDK",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "FxSdk\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "飞象企服"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
