@@ -1,4 +1,5 @@
 <?php
+namespace FxSdk\request;
 
 class FxAfterSaleCancelRequest
 {

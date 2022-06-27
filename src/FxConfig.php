@@ -1,4 +1,5 @@
 <?php
+namespace FxSdk;
 
 class FxConfig
 {

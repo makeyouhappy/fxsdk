@@ -1,7 +1,4 @@
 <?php
-require_once dirname(dirname(__FILE__)) . 'FxClient.php';
-require_once dirname(dirname(__FILE__)) . 'FxConfig.php';
-require_once dirname(dirname(__FILE__)) . '/request/FxAuthTokenRequest.php';
 
 $config = new FxConfig();
 $config->setSecretKey("");
