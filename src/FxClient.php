@@ -22,13 +22,13 @@ class FxClient
     public function execute($request)
     {
         if (!$this->config) {
-            throw new Exception("FxConfig not configured");
+            throw new \Exception("FxConfig not configured");
         }
         if (!$this->config->getServerUrl()) {
-            throw new Exception("ServerUrl not configured");
+            throw new \Exception("ServerUrl not configured");
         }
         if (!$this->config->getSecretKey()) {
-            throw new Exception("SecretKey not configured");
+            throw new \Exception("SecretKey not configured");
         }
 
         //生成签名
@@ -43,7 +43,7 @@ class FxClient
         //进行跳转
         if (method_exists($request, 'getIsRedirect') && $request->getIsRedirect()) {
             $url .= $request->getUriParams() . '&sign=' . $sign;
-            redirect($url);
+            $this->redirect($url);
         }
 
         $param = json_encode($bizContent);
@@ -173,5 +173,38 @@ class FxClient
             case 'sha1':
                 return sha1(uniqid(mt_rand(), TRUE));
         }
+    }
+
+    public function redirect($uri = '', $method = 'auto', $code = NULL)
+    {
+        // IIS environment likely? Use 'refresh' for better compatibility
+        if ($method === 'auto' && isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== FALSE)
+        {
+            $method = 'refresh';
+        }
+        elseif ($method !== 'refresh' && (empty($code) OR ! is_numeric($code)))
+        {
+            if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1')
+            {
+                $code = ($_SERVER['REQUEST_METHOD'] !== 'GET')
+                    ? 303	// reference: http://en.wikipedia.org/wiki/Post/Redirect/Get
+                    : 307;
+            }
+            else
+            {
+                $code = 302;
+            }
+        }
+
+        switch ($method)
+        {
+            case 'refresh':
+                header('Refresh:0;url='.$uri);
+                break;
+            default:
+                header('Location: '.$uri, TRUE, $code);
+                break;
+        }
+        exit;
     }
 }
